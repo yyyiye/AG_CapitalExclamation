@@ -3,6 +3,35 @@ by _Frost_, _Yiye_, and _Baojia_
 
 Devoloped from https://github.com/endernewton/tf-faster-rcnn
 
+## Installation
+1. Clone the repository
+  ```Shell
+  git clone https://github.com/Frostinassiky/AG_CapitalExclamation.git
+  ```
+
+2. Update your -arch in setup script to match your GPU
+  ```Shell
+  cd AG_CapitalExclamation-rcnn/lib
+  vim setup.py
+  # Check the GPU architecture, if you are using Pascal arch, please switch to sm_61
+  ```
+
+3. Build the Cython modules
+  ```Shell
+  make clean
+  make
+  cd ..
+  ```
+
+4. Install the [Python COCO API](https://github.com/pdollar/coco). The code requires the API to access COCO dataset.
+  ```Shell
+  cd data
+  git clone https://github.com/pdollar/coco.git
+  cd coco/PythonAPI
+  make
+  cd ../../..
+  ```
+
 Here is the original **readme**
 
 
