@@ -32,8 +32,14 @@ Devoloped from https://github.com/endernewton/tf-faster-rcnn
   cd ../../..
   ```
 
-Here is the original **readme**
+## Easy Test
+  ```Shell
+  ./experiments/scripts/train_faster_rcnn.sh 1 coco res101
+  ```
 
+
+Here is the original **readme**
+---------------
 
 # tf-faster-rcnn
 A Tensorflow implementation of faster RCNN detection framework by Xinlei Chen (xinleic@cs.cmu.edu). This repository is based on the python Caffe implementation of faster RCNN available [here](https://github.com/rbgirshick/py-faster-rcnn).
