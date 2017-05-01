@@ -1,5 +1,5 @@
 # AlphaGo! model
-by _Frost_, _Yiye_, and _Baojia_
+by _Frost_, _Yiye_, and _Baojia_!
 
 Devoloped from https://github.com/endernewton/tf-faster-rcnn
 
