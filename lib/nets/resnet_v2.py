@@ -170,10 +170,10 @@ class resnetv1(Network):
       bbox_pred = slim.fully_connected(fc7, self._num_classes * 4, weights_initializer=initializer_bbox,
                                        trainable=is_training,
                                        activation_fn=None, scope='bbox_pred')
-    # self._predictions["rpn_cls_score"] = rpn_cls_score
-    # self._predictions["rpn_cls_score_reshape"] = rpn_cls_score_reshape
-    # self._predictions["rpn_cls_prob"] = rpn_cls_prob
-    # self._predictions["rpn_bbox_pred"] = rpn_bbox_pred
+    self._predictions["rpn_cls_score"] = None
+    self._predictions["rpn_cls_score_reshape"] = None
+    self._predictions["rpn_cls_prob"] = None
+    self._predictions["rpn_bbox_pred"] = None
     self._predictions["cls_score"] = cls_score
     self._predictions["cls_prob"] = cls_prob
     self._predictions["bbox_pred"] = bbox_pred
