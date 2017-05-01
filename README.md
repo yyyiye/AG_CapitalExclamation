@@ -33,8 +33,10 @@ Devoloped from https://github.com/endernewton/tf-faster-rcnn
   ```
 
 ## Easy Test
+Prepare Pictures and annotations in folder _/home/xum/Documents/Git/tf-faster-rcnn-BAI/data/coco_
+Prepare pretrained model files in folder _/home/xum/Documents/Git/AlphaNext/AlphaModel/AG_CapitalExclamation/data_
   ```Shell
-  ./experiments/scripts/train_faster_rcnn.sh 1 coco res101
+  ./experiments/scripts/train_faster_rcnn.sh 0 coco res101
   ```
 
 
