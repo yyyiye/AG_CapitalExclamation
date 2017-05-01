@@ -1,3 +1,11 @@
+# AlphaGo! model
+by _Frost_, _Yiye_, and _Baojia_
+
+Devoloped from https://github.com/endernewton/tf-faster-rcnn
+
+Here is the original **readme**
+
+
 # tf-faster-rcnn
 A Tensorflow implementation of faster RCNN detection framework by Xinlei Chen (xinleic@cs.cmu.edu). This repository is based on the python Caffe implementation of faster RCNN available [here](https://github.com/rbgirshick/py-faster-rcnn).
 
