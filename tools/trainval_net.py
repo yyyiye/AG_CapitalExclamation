@@ -28,32 +28,34 @@ def parse_args():
   parser = argparse.ArgumentParser(description='Train a Fast R-CNN network')
   parser.add_argument('--cfg', dest='cfg_file',
                       help='optional config file',
-                      default=None, type=str)
+                      default="/home/xum/Documents/Git/AlphaNext/AlphaModel/AG_CapitalExclamation/experiments/cfgs/res101.yml",
+                      type=str)
   parser.add_argument('--weight', dest='weight',
                       help='initialize with pretrained model weights',
+                      default = "/home/xum/Documents/Git/AlphaNext/AlphaModel/AG_CapitalExclamation/data/imagenet_weights/res101.ckpt",
                       type=str)
   parser.add_argument('--imdb', dest='imdb_name',
                       help='dataset to train on',
-                      default='voc_2007_trainval', type=str)
+                      default='coco_2014_train', type=str)
   parser.add_argument('--imdbval', dest='imdbval_name',
                       help='dataset to validate on',
-                      default='voc_2007_test', type=str)
+                      default='coco_2014_minival', type=str)
   parser.add_argument('--iters', dest='max_iters',
                       help='number of iterations to train',
-                      default=70000, type=int)
+                      default=490000, type=int)
   parser.add_argument('--tag', dest='tag',
                       help='tag of the model',
                       default=None, type=str)
   parser.add_argument('--net', dest='net',
                       help='vgg16, res50, res101, res152',
-                      default='res50', type=str)
+                      default='res101', type=str)
   parser.add_argument('--set', dest='set_cfgs',
-                      help='set config keys', default=None,
+                      help='set config keys', default=['ANCHOR_SCALES', "[4,8,16,32]", 'ANCHOR_RATIOS' ,"[0.5,1,2]", 'TRAIN.STEPSIZE', 350000],
                       nargs=argparse.REMAINDER)
 
   if len(sys.argv) == 1:
     parser.print_help()
-    sys.exit(1)
+    # sys.exit(1)
 
   args = parser.parse_args()
   return args
