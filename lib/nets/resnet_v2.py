@@ -16,7 +16,7 @@ from tensorflow.contrib.slim.python.slim.nets import resnet_utils
 from tensorflow.contrib.slim.python.slim.nets import resnet_v1
 import numpy as np
 
-from nets.network import Network
+from nets.network_fr import Network
 from tensorflow.python.framework import ops
 from tensorflow.contrib.layers.python.layers import regularizers
 from tensorflow.python.ops import nn_ops
@@ -85,6 +85,29 @@ class resnetv1(Network):
 
     return net
 
+  def proposal_fr(self, net_conv4):
+    batch_inds = tf.zeros((128, 1), dtype=tf.float32)
+    net_conv4_shape = tf.shape(net_conv4)
+    height = (tf.to_float(net_conv4_shape[1]) - 1.) * np.float32(self._feat_stride[0])
+    width = (tf.to_float(net_conv4_shape[2]) - 1.) * np.float32(self._feat_stride[0])
+    proposals_x1 = np.ones((128, 1), dtype=np.float32)
+    proposals_y1 = np.ones((128, 1), dtype=np.float32)
+    proposals_x2 = np.ones((128, 1), dtype=np.float32)
+    proposals_y2 = np.ones((128, 1), dtype=np.float32)
+    for k in range(16):
+      for l in range(8):
+        proposals_x1[k*8+l] = proposals_x1[k*8+l]* (k/17.0)
+        proposals_y1[k*8+l] = proposals_y1[k*8+l]* (l/9.0)
+        proposals_x2[k*8+l] = proposals_x2[k*8+l]* ((k+2.0)/17.0)
+        proposals_y2[k*8+l] = proposals_y2[k*8+l]* ((l+2.0)/9.0)
+    proposals_x1 = tf.stack(proposals_x1)*width
+    proposals_y1 = tf.stack(proposals_y1)*height
+    proposals_x2 = tf.stack(proposals_x2)*width
+    proposals_y2 = tf.stack(proposals_y2)*height
+    rois = tf.concat([batch_inds,proposals_x1, proposals_y1, proposals_x2, proposals_y2 ], 1)
+    roi_scores = tf.ones((128, 1), dtype=tf.float32)
+    return rois, roi_scores
+
   def build_network(self, sess, is_training=True):
     # select initializers
     if cfg.TRAIN.TRUNCATED:
@@ -113,7 +136,8 @@ class resnetv1(Network):
 
     self._act_summaries.append(net_conv4)
     self._layers['head'] = net_conv4
-    ## we dont need RPN
+    # ## we dont need RPN
+    # ## so rio is replaced after this
     # with tf.variable_scope(self._resnet_scope, self._resnet_scope):
     #   # build the anchors for the image
     #   self._anchor_component()
@@ -146,12 +170,19 @@ class resnetv1(Network):
     #     else:
     #       raise NotImplementedError
     #
-    #   # rcnn
-    #   if cfg.POOLING_MODE == 'crop':
-    #     pool5 = self._crop_pool_layer(net_conv4, rois, "pool5")
-    #   else:
-    #     raise NotImplementedError
+    #   # # rcnn
+    #   # if cfg.POOLING_MODE == 'crop':
+    #   #   pool5 = self._crop_pool_layer(net_conv4, rois, "pool5")
+    #   # else:
+    #   #   raise NotImplementedError
     ## TODO: Add rois
+    ## replace pool5
+    with tf.name_scope("FrostProposal"):
+      with tf.name_scope("FrostRois"):
+        rois, roi_scores = self.proposal_fr(net_conv4)
+      with tf.name_scope("FrostTargetLayer"):
+        rois, _ = self._proposal_target_layer(rois, roi_scores, "rpn_rois")
+
     pool5 = self._crop_pool_layer(net_conv4, rois, "pool5")
 
     with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
@@ -170,10 +201,10 @@ class resnetv1(Network):
       bbox_pred = slim.fully_connected(fc7, self._num_classes * 4, weights_initializer=initializer_bbox,
                                        trainable=is_training,
                                        activation_fn=None, scope='bbox_pred')
-    self._predictions["rpn_cls_score"] = None
-    self._predictions["rpn_cls_score_reshape"] = None
-    self._predictions["rpn_cls_prob"] = None
-    self._predictions["rpn_bbox_pred"] = None
+    # self._predictions["rpn_cls_score"] = rpn_cls_score
+    # self._predictions["rpn_cls_score_reshape"] = rpn_cls_score_reshape
+    # self._predictions["rpn_cls_prob"] = rpn_cls_prob
+    # self._predictions["rpn_bbox_pred"] = rpn_bbox_pred
     self._predictions["cls_score"] = cls_score
     self._predictions["cls_prob"] = cls_prob
     self._predictions["bbox_pred"] = bbox_pred
