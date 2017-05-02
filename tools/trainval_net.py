@@ -36,10 +36,14 @@ def parse_args():
                       type=str)
   parser.add_argument('--imdb', dest='imdb_name',
                       help='dataset to train on',
-                      default='coco_2014_train', type=str)
+                      default='coco_2014_train',
+                      #default='coco_style_fish',
+                      type=str)
   parser.add_argument('--imdbval', dest='imdbval_name',
                       help='dataset to validate on',
-                      default='coco_2014_minival', type=str)
+                      default='coco_2014_minival',
+                      #default='coco_style_fish',
+                      type=str)
   parser.add_argument('--iters', dest='max_iters',
                       help='number of iterations to train',
                       default=490000, type=int)
