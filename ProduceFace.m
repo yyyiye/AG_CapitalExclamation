@@ -44,6 +44,7 @@ while index <= length(fileContent)
                 pictNum = pictNum-1;
                 continue
             end
+            %% Add a flag here: flag =0     
             try
                 imgHead = image(y:y1,x:x1, :);
                 imgHead = imresize(imgHead,sizexy);
@@ -52,10 +53,15 @@ while index <= length(fileContent)
                     'Source' ,'WIDER FACE','Software' ,'MATLAB','Comment',['ID: ', num2str(pictNum)],...
                     'Warning','Produced by Frost, please contact me before use. Xu.Frost@gmail.com');
                 disp(['-------------- saving image ',num2str(pictNum)] );
+                %% change flag to 1: flag =1
             catch
                 pictNum = pictNum-1;
             end
-            % check file resolution
+            %% if flag changed:
+            %% Add your random expanding code here, then we get four new vars: [y_1,y1_1,x_1:x1_1]
+            %% if new vars exceed the initial range, save an empty picture.
+            %% if not save new picture
+            %% both pictures should replace the original one, the production of Line 51: imwrite....
         end
         index = index +1;
         continue
