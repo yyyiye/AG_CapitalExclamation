@@ -54,6 +54,7 @@ while index <= length(fileContent)
                     'Warning','Produced by Frost, please contact me before use. Xu.Frost@gmail.com');
                 disp(['-------------- saving image ',num2str(pictNum)] );
                 %% change flag to 1: flag =1
+                %% [WARNING] except _flag_, do NOT change anything in this area to avoid the change of output!!
             catch
                 pictNum = pictNum-1;
             end
