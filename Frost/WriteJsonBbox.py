@@ -2,19 +2,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-# from datasets.imdb import imdb
-# import datasets.ds_utils as ds_utils
-# from model.config import cfg
-# import os.path as osp
-# import sys
-# import os
 import numpy as np
-# import scipy.sparse
-# import scipy.io as sio
-# import pickle
 import json
 
 def ReadBoxFile(txtPath):
+    ＃　read file by line
     annTxt =  np.loadtxt(txtPath,delimiter=',')
     boxes = annTxt[:,0:-1]
     classes = annTxt[:,-1]
