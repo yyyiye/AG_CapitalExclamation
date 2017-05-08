@@ -2,12 +2,14 @@ fileID = fopen('wider_face_split/wider_face_train_bbx_gt.txt');
 fileContent = textscan(fileID,'%s', 'Delimiter', '\n');
 fileContent = fileContent{1};
 
-expand = 0.2; ex = expand;
+expand = 0.2;
+ex = expand;
 sizexy = [112,96];
 minw = 100;
-hatHeight = ex;
+hatHeight = 0.2;
 index = 1;
 pictNum = 0 ;
+Bbox = zeros(5338,4); %bbox信息
 while index <= length(fileContent)
     fileLine = fileContent{index};
     if fileLine(end) == 'g' % this line shows path
@@ -25,7 +27,7 @@ while index <= length(fileContent)
             index = index + 1; % next line
             pictNum = pictNum+1;
             boxInfo = textscan(fileContent{index},'%d');
-            boxInfo=boxInfo{1};
+            boxInfo = boxInfo{1};
             % change ratio to sizexy
             x = boxInfo(1); y = boxInfo(2); w = boxInfo(3); h = boxInfo(4);
             x = double(x); y = double(y); w = double(w); h = double(h); 
@@ -38,13 +40,35 @@ while index <= length(fileContent)
                 h = sizexy(1)*w/sizexy(2);
             end
             %  expand range
-            x = x - w*ex; y = y - h*(ex+hatHeight); 
+            rand1 = 0.2-0.4 * rand(1,1);
+            rand2 = 0.2-0.4 * rand(1,1);
+            x = x - w*(ex + rand1); y = y - h*(ex+hatHeight+rand2); 
             x1 = x + w*(1+2*ex); y1 = y + h*(1+2*ex+hatHeight);
+            
+            x0 = boxInfo(1) - x; %原始图片中x，y值相对于生成图片的位置
+            y0 = boxInfo(2) - y; %原始图片中x，y值相对于生成图片的位置
+            x0 = x0 * sizexy(2)/(w*(1+2*ex));
+            y0 = y0 * sizexy(1)/(h*(1+2*ex+hatHeight));
+            w0 = w * sizexy(2)/(w*(1+2*ex));
+            h0 = h * sizexy(1)/(h*(1+2*ex+hatHeight));       
+            
+%              rand1 = 0.2-0.4 * rand(1,1);
+%             rand2 = 0.2-0.4 * rand(1,1);
+%             x = x - w*(ex + rand1); y = y - h*(ex+hatHeight+rand2); 
+%             x1 = x + w*(1+2*ex+rand1); y1 = y + h*(1+2*ex+hatHeight+rand2);
+%             
+%             x0 = boxInfo(1) - x; %原始图片中x，y值相对于生成图片的位置
+%             y0 = boxInfo(2) - y; %原始图片中x，y值相对于生成图片的位置
+%             x0 = x0 * sizexy(2)/(w*(1+2*ex+ rand1));
+%             y0 = y0 * sizexy(1)/(h*(1+2*ex+hatHeight+rand2));
+%             w0 = w * sizexy(2)/(w*(1+2*ex+rand1));
+%             h0 = h * sizexy(1)/(h*(1+2*ex+hatHeight+rand2));       
             if w < minw
                 pictNum = pictNum-1;
                 continue
             end
-            %% Add a flag here: flag =0     
+            Bbox(pictNum , :) =[x0,y0,w0,h0];
+            
             try
                 imgHead = image(y:y1,x:x1, :);
                 imgHead = imresize(imgHead,sizexy);
@@ -53,21 +77,29 @@ while index <= length(fileContent)
                     'Source' ,'WIDER FACE','Software' ,'MATLAB','Comment',['ID: ', num2str(pictNum)],...
                     'Warning','Produced by Frost, please contact me before use. Xu.Frost@gmail.com');
                 disp(['-------------- saving image ',num2str(pictNum)] );
-                %% change flag to 1: flag =1
-                %% [WARNING] except _flag_, do NOT change anything in this area to avoid the change of output!!
             catch
                 pictNum = pictNum-1;
             end
-            %% if flag changed:
-            %% Add your random expanding code here, then we get four new vars: [y_1,y1_1,x_1:x1_1]
-            %% if new vars exceed the initial range, save an empty picture.
-            %% if not save new picture
-            %% both pictures should replace the original one, the production of Line 51: imwrite....
+            % check file resolution
         end
         index = index +1;
         continue
     end
     msgbox('error')
 end
+fclose(fileID);
 
-fclose(fileID)
+%创建文件
+fid = fopen('test.txt','wt');  
+%写头部
+fprintf(fid,'%s','x  y  w  h');
+fprintf(fid,'%c\n',' ');    %换行
+%依次写入数据
+for k=1:5338; 
+    for m = 1:4
+        p=num2str(Bbox(k,m));
+        fprintf(fid,'%s ',p);    %每个数据用空格隔开
+    end
+    fprintf(fid,'%c\n',' ');    %写完一行,换行
+end
+fclose(fid); %关闭文件
