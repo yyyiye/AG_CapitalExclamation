@@ -1,5 +1,6 @@
-# preprocessing
-## for matlab
+# Preprocessing
+for matlab
+TODO: Add color code 
 ## run after you get:
 1. bbox
 2. gender and color
