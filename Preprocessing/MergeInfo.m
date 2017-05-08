@@ -12,7 +12,7 @@
 % [path] "collect1/[id].png","collect2/[id].png","collect2/[id].png"
 % [bbox] [x,y,w,h],[x,y,w,h],[x,y,w,h]
 %% load gender and color
-load "data.mat"
+load 'data.mat'
 %% load bbox
 A1 = fscanf(fopen('test1.txt'),'%f',[4 Inf]); A1=round(100*A1')/100;
 A2 = fscanf(fopen('test2.txt'),'%f',[4 Inf]); A2=round(100*A2')/100;
