@@ -18,7 +18,7 @@ while index <= length(fileContent)
     end
     if length(fileLine)<5 % this line shows number of picts
         if str2double(fileLine)>5 % more face means inaccurate
-            disp(['jump image ', fileContent{index-1}] )
+            % disp(['jump image ', fileContent{index-1}] )
             index = index + str2double(fileLine)+1;
             continue
         end
@@ -60,15 +60,18 @@ while index <= length(fileContent)
                 pictNum = pictNum-1;
             end
             if flag ==1
-             rand1 = 0.2-0.4 * rand(1,1); rand2 = 0.2-0.4 * rand(1,1);
-             x = x - w*(ex + rand1); y = y - h*(ex+hatHeight+rand2);
-             x1 = x + w*(1+2*ex); y1 = y + h*(1+2*ex+hatHeight);
-             x0 = boxInfo(1) - x; %原始图片中x，y值相对于生成图片的位置		
-             y0 = boxInfo(2) - y; %原始图片中x，y值相对于生成图片的位置		
-             x0 = x0 * sizexy(2)/(w*(1+2*ex));		
-             y0 = y0 * sizexy(1)/(h*(1+2*ex+hatHeight));		
-             w0 = w * sizexy(2)/(w*(1+2*ex));		
-             h0 = h * sizexy(1)/(h*(1+2*ex+hatHeight));
+             rand1 =0.4 * rand(1,1); rand2 = 0.4* rand(1,1);
+             rand3 =0.4 * rand(1,1); rand4 = 0.4* rand(1,1);
+             x = x - w*( rand1); y = y - h*(rand2);
+             x1 = x + w*(1+2*ex+rand1+rand3); y1 = y + h*(1+2*ex+hatHeight+rand2+rand4);
+             W = x1-x; H=y1-y;
+             x0 = rand1*w;
+             y0 =  rand2*h;
+             %% resize box
+             x0 = x0 * sizexy(2)/W;		
+             y0 = y0 * sizexy(1)/H;		
+             w0 = (w*(1+2*ex)) * sizexy(2)/W;		
+             h0 =  (y*(1+2*ex)) * sizexy(1)/H;
              Bbox(pictNum , :) =[x0,y0,w0,h0];
              try
                 imgHead = image(y:y1,x:x1, :);
@@ -79,7 +82,7 @@ while index <= length(fileContent)
                     'Warning','Produced by Frost and Yiye, please contact Frost before use. Xu.Frost@gmail.com');
                 disp(['-------------- saving modified image ',num2str(pictNum)] );
              catch
-                disp(['-------------- failed modified image ',num2str(pictNum)] );
+                disp(['Failed modified image ',num2str(pictNum)] );
              end
 
             end
@@ -94,7 +97,7 @@ while index <= length(fileContent)
     msgbox('error')
 end
 
-fclose(fileID)
+fclose(fileID);
 
 
 %创建文件
