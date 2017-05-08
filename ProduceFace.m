@@ -8,6 +8,7 @@ minw = 100;
 hatHeight = ex;
 index = 1;
 pictNum = 0 ;
+Bbox = zeros(5338,4);
 while index <= length(fileContent)
     fileLine = fileContent{index};
     if fileLine(end) == 'g' % this line shows path
@@ -44,6 +45,7 @@ while index <= length(fileContent)
                 pictNum = pictNum-1;
                 continue
             end
+            flag =0;     
             try
                 imgHead = image(y:y1,x:x1, :);
                 imgHead = imresize(imgHead,sizexy);
@@ -52,10 +54,39 @@ while index <= length(fileContent)
                     'Source' ,'WIDER FACE','Software' ,'MATLAB','Comment',['ID: ', num2str(pictNum)],...
                     'Warning','Produced by Frost, please contact me before use. Xu.Frost@gmail.com');
                 disp(['-------------- saving image ',num2str(pictNum)] );
+                flag =1;
+                fileName = ['collect/',num2str(pictNum),'.png'];
             catch
                 pictNum = pictNum-1;
             end
-            % check file resolution
+            if flag ==1
+             rand1 = 0.2-0.4 * rand(1,1); rand2 = 0.2-0.4 * rand(1,1);
+             x = x - w*(ex + rand1); y = y - h*(ex+hatHeight+rand2);
+             x1 = x + w*(1+2*ex); y1 = y + h*(1+2*ex+hatHeight);
+             x0 = boxInfo(1) - x; %原始图片中x，y值相对于生成图片的位置		
+             y0 = boxInfo(2) - y; %原始图片中x，y值相对于生成图片的位置		
+             x0 = x0 * sizexy(2)/(w*(1+2*ex));		
+             y0 = y0 * sizexy(1)/(h*(1+2*ex+hatHeight));		
+             w0 = w * sizexy(2)/(w*(1+2*ex));		
+             h0 = h * sizexy(1)/(h*(1+2*ex+hatHeight));
+             Bbox(pictNum , :) =[x0,y0,w0,h0];
+             try
+                imgHead = image(y:y1,x:x1, :);
+                imgHead = imresize(imgHead,sizexy);
+                imwrite(imgHead,['modified_',fileName],'png',...
+                    'Author','Frost, Yiye','Description' ,'Head image 112*96*8*3, used for AlphaNext', ...
+                    'Source' ,'WIDER FACE','Software' ,'MATLAB','Comment',['ID: ', num2str(pictNum)],...
+                    'Warning','Produced by Frost and Yiye, please contact Frost before use. Xu.Frost@gmail.com');
+                disp(['-------------- saving modified image ',num2str(pictNum)] );
+             catch
+                disp(['-------------- failed modified image ',num2str(pictNum)] );
+             end
+
+            end
+            %% Add your random expanding code here, then we get four new vars: [y_1,y1_1,x_1:x1_1]
+            %% if new vars exceed the initial range, save an empty picture.
+            %% if not save new picture
+            %% both pictures should replace the original one, the production of Line 51: imwrite....
         end
         index = index +1;
         continue
@@ -64,3 +95,19 @@ while index <= length(fileContent)
 end
 
 fclose(fileID)
+
+
+%创建文件
+fid = fopen('test.txt','wt');  		
+%写头部		
+fprintf(fid,'%s','x  y  w  h');		
+fprintf(fid,'%c\n',' ');    %换行		
+%依次写入数据		
+for k=1:5338; 		
+    for m = 1:4		
+        p=num2str(Bbox(k,m));		
+        fprintf(fid,'%s ',p);    %每个数据用空格隔开		
+    end		
+    fprintf(fid,'%c\n',' ');    %写完一行,换行		
+end		
+fclose(fid); %关闭文件
