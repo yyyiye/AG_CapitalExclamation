@@ -13,11 +13,6 @@ import numpy as np
 # import scipy.io as sio
 # import pickle
 import json
-# import uuid
-# # COCO API
-# from pycocotools.coco import COCO
-# from pycocotools.cocoeval import COCOeval
-# from pycocotools import mask as COCOmask
 
 def ReadBoxFile(txtPath):
     annTxt =  np.loadtxt(txtPath,delimiter=',')
