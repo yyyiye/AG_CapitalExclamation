@@ -88,9 +88,11 @@ def WriteCOCOFile(classes, boxes, filePath):
         json.dump(results, fid)
     print('Writing results json to {}'.format(filePath))
     return results
-
-boxes,classes = ReadBoxFile("/home/xum/Documents/Git/tf-faster-rcnn-BAI/Frost/GT of boxes/boxes.txt")
-fakeDataset = WriteCOCOFile(classes, boxes, "/home/xum/Documents/Git/tf-faster-rcnn-BAI/Frost/test.json")
-dataset = json.load(open("/home/xum/Documents/Git/tf-faster-rcnn-BAI/data/coco/annotations/instances_train2017.json", 'r'))
-pass
-print('dataset')
+file = open("FaceResult.txt")
+for line in file:
+    print(line)
+#boxes,classes = ReadBoxFile("FaceResult.txt")
+#fakeDataset = WriteCOCOFile(classes, boxes, "/home/xum/Documents/Git/tf-faster-rcnn-BAI/Frost/test.json")
+#dataset = json.load(open("/home/xum/Documents/Git/tf-faster-rcnn-BAI/data/coco/annotations/instances_train2017.json", 'r'))
+#pass
+#print('dataset')
