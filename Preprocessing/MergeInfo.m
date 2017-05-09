@@ -3,13 +3,13 @@
 % [id]
 % [gender] 0 1 2
 % [Hat] 0:NA; 1:black; 2: blue; 3: brown; 4: green; 5: orenge; 6: red; 7:
-% gray; 8: white; 9: yellow; 10: transparent; 11:multi-color;          
+% gray; 8: white; 9: yellow; 10: transparent; 11:multi-color;  99:can'tjudge;      
 % [Glasses] 0:NA; 1:black; 2: blue; 3: brown; 4: green; 5: orenge; 6: red; 7:
-% gray; 8: white; 9: yellow; 10: transparent; 11:multi-color;  
+% gray; 8: white; 9: yellow; 10: transparent; 11:multi-color;  99:can'tjudge;
 % [Mask] 0:NA; 1:black; 2: blue; 3: brown; 4: green; 5: orenge; 6: red; 7:
-% gray; 8: white; 9: yellow; 10: transparent; 11:multi-color; 
+% gray; 8: white; 9: yellow; 10: transparent; 11:multi-color;  99:can'tjudge;
 % [num] 0,1,2,3
-% [path] "collect1/[id].png","collect2/[id].png","collect2/[id].png"
+% [path] "collect1/[id].png","collect2/[id].png","collect3/[id].png"
 % [bbox] [x,y,w,h],[x,y,w,h],[x,y,w,h]
 %% load gender and color
 load 'data.mat'
@@ -18,7 +18,7 @@ A1 = fscanf(fopen('test1.txt'),'%f',[4 Inf]); A1=round(100*A1')/100;
 A2 = fscanf(fopen('test2.txt'),'%f',[4 Inf]); A2=round(100*A2')/100;
 A3 = fscanf(fopen('test3.txt'),'%f',[4 Inf]); A3=round(100*A3')/100;
 %% start
-fid=fopen('result.txt','wt');
+fid = fopen('result.txt','wt');
 
 for k = 1 : length(No)
     id = No(k);
@@ -34,7 +34,7 @@ for k = 1 : length(No)
 %     end
 %     for i = 1 : counter
     string = strtrim(hat); %get the first color
-    [string, ~] = strtok(string);
+    [string, left] = strtok(string);
         switch string   %judge the color
             case {'N.A.','N.A','NA','N. A.'}
                 hat = 0;   
@@ -63,12 +63,15 @@ for k = 1 : length(No)
             otherwise 
                 hat = 99; %99 means can't judge
         end 
+        if  ~isempty(left)
+            hat = 11;
+        end
     %end
     % Hat = 0;
     glass = Glass{k};%;, there should be number
     % Glass = 0;
     string = strtrim(glass); %get the first color
-    [string, ~] = strtok(string);
+    [string, left] = strtok(string);
          switch string
             case {'N.A.','N.A','NA'}
                 glass = 0;   
@@ -97,10 +100,13 @@ for k = 1 : length(No)
             otherwise 
                 glass = 99;        
          end   
+         if  ~isempty(left)
+            glass = 11;
+         end
     mask = Mask{k};%, there should be number
     % Mask = 0;
     string = strtrim(mask); %get the first color
-    [string, ~] = strtok(string);
+    [string, left] = strtok(string);
          switch string
             case {'N.A.','N.A','NA'}
                 mask = 0;   
@@ -128,7 +134,10 @@ for k = 1 : length(No)
                 mask = 11;  
             otherwise 
                 mask = 99;       
-         end         
+         end        
+         if  ~isempty(left)
+            mask = 11;
+         end
     %% path and boxes
     path = {};boxes={};
     Name = [num2str(No(k)), '.png'];
@@ -156,3 +165,4 @@ for k = 1 : length(No)
 end
 
 fclose(fid);
+
